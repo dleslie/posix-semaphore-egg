@@ -1,0 +1,12 @@
+(define compile-options "-O3 -C -O3")
+(define link-options "-lpthread")
+
+(compile ,compile-options ,link-options -s -d1 -j posix-semaphore posix-semaphore.scm)
+(compile ,compile-options ,link-options -s -d0 posix-semaphore.import.scm)
+(compile ,compile-options ,link-options -c -d1 -j posix-semaphore -unit posix-semaphore posix-semaphore.scm)
+
+(install-extension
+ 'posix-semaphore
+ '("posix-semaphore.so" "posix-semaphore.o" "posix-semaphore.import.so")
+ '((version 0.1)
+   (static "posix-semaphore.o")))
