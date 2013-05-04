@@ -8,5 +8,5 @@
 (install-extension
  'posix-semaphore
  '("posix-semaphore.so" "posix-semaphore.o" "posix-semaphore.import.so")
- '((version 0.1)
+ '((version 0.2)
    (static "posix-semaphore.o")))

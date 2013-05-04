@@ -54,7 +54,10 @@
  (define s/ixoth (foreign-value "S_IXOTH" mode_t))
  (define s/irwxo (foreign-value "S_IRWXO" mode_t))
 
- (define sem-init (foreign-lambda* integer ((sem_t sem) (bool shared) (unsigned-integer value)) "C_return(sem_init(sem, shared, value));"))
+ (define make-sem (foreign-lambda* sem_t () "C_return((sem_t *)C_malloc(sizeof(sem_t)));"))
+ (define free-sem (foreign-lambda* void ((sem_t sem)) "free(sem);"))
+
+ (define sem-init (foreign-lambda* scheme-object ((sem_t sem) (bool shared) (unsigned-integer value)) "CHECK2(sem_init(sem, shared, value))"))
  (define sem-destroy (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_destroy(sem))"))
 
  (define sem-open (foreign-lambda* sem_t ((c-string name) (unsigned-integer oflag)) "C_return(sem_open(name, oflag));"))
