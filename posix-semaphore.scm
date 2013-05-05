@@ -2,13 +2,7 @@
 #include <semaphore.h>
 #include <fcntl.h>
 
-#define CHECK(err,val)                        \
-  if (err != 0)                               \
-    C_return(C_SCHEME_FALSE);                 \
-  else                                        \
-    C_return(C_fixnum(val));             
-
-#define CHECK2(op)                              \
+#define CHECK(op)                               \
   if (op == 0)                                  \
     C_return(C_SCHEME_TRUE);                    \
   else                                          \
@@ -58,8 +52,8 @@
  (define make-sem (foreign-lambda* sem_t () "C_return((sem_t *)C_malloc(sizeof(sem_t)));"))
  (define free-sem! (foreign-lambda* void ((sem_t sem)) "free(sem);"))
 
- (define sem-init (foreign-lambda* scheme-object ((sem_t sem) (bool shared) (unsigned-integer value)) "CHECK2(sem_init(sem, shared, value))"))
- (define sem-destroy (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_destroy(sem))"))
+ (define sem-init (foreign-lambda* scheme-object ((sem_t sem) (bool shared) (unsigned-integer value)) "CHECK(sem_init(sem, shared, value))"))
+ (define sem-destroy (foreign-lambda* scheme-object ((sem_t sem)) "CHECK(sem_destroy(sem))"))
 
  (define sem-failed? (foreign-lambda* bool ((sem_t sem)) "C_return(sem == SEM_FAILED);"))
 
@@ -68,27 +62,30 @@
  (define sem-open/mode (foreign-lambda* sem_t ((c-string name) (unsigned-integer oflag) (mode_t mode) (unsigned-integer value)) 
                                  "C_return(sem_open(name, oflag, mode, value));"))
 
- (define sem-close (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_close(sem))"))
+ (define sem-close (foreign-lambda* scheme-object ((sem_t sem)) "CHECK(sem_close(sem))"))
 
- (define sem-unlink (foreign-lambda* scheme-object ((c-string name)) "CHECK2(sem_unlink(name))"))
+ (define sem-unlink (foreign-lambda* scheme-object ((c-string name)) "CHECK(sem_unlink(name))"))
 
- (define sem-wait (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_wait(sem))"))
+ (define sem-wait (foreign-lambda* scheme-object ((sem_t sem)) "CHECK(sem_wait(sem))"))
 
- (define sem-trywait (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_trywait(sem))"))
+ (define sem-trywait (foreign-lambda* scheme-object ((sem_t sem)) "CHECK(sem_trywait(sem))"))
 
  (define sem-timedwait (foreign-lambda* scheme-object ((sem_t sem) (unsigned-integer seconds) (unsigned-integer nanoseconds)) "
 struct timespec tm;
 clock_gettime(CLOCK_REALTIME, &tm);
 tm.tv_sec += seconds;
 tm.tv_nsec += nanoseconds;
-CHECK2(sem_timedwait(sem, &tm))
+CHECK(sem_timedwait(sem, &tm))
 "))
 
- (define sem-post (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_post(sem))"))
+ (define sem-post (foreign-lambda* scheme-object ((sem_t sem)) "CHECK(sem_post(sem))"))
 
  (define sem-getvalue (foreign-lambda* scheme-object ((sem_t sem)) "
 int val = 0;
 int err = sem_getvalue(sem, &val);
-CHECK(err, val);
+if (err != 0)                                     
+  C_return(C_SCHEME_FALSE);                       
+else                                              
+  C_return(C_fix(val));                                
 "))
  )
