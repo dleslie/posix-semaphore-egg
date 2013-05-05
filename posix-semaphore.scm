@@ -25,6 +25,7 @@
  (define-foreign-type mode_t unsigned-integer)
 
  (define sem-failed (foreign-value "SEM_FAILED" sem_t))
+
  (define o/accmode (foreign-value "O_ACCMODE" unsigned-integer))
  (define o/rdonly (foreign-value "O_RDONLY" unsigned-integer))
  (define o/wronly (foreign-value "O_WRONLY" unsigned-integer))
@@ -55,13 +56,17 @@
  (define s/irwxo (foreign-value "S_IRWXO" mode_t))
 
  (define make-sem (foreign-lambda* sem_t () "C_return((sem_t *)C_malloc(sizeof(sem_t)));"))
- (define free-sem (foreign-lambda* void ((sem_t sem)) "free(sem);"))
+ (define free-sem! (foreign-lambda* void ((sem_t sem)) "free(sem);"))
 
  (define sem-init (foreign-lambda* scheme-object ((sem_t sem) (bool shared) (unsigned-integer value)) "CHECK2(sem_init(sem, shared, value))"))
  (define sem-destroy (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_destroy(sem))"))
 
+ (define sem-failed? (foreign-lambda* bool ((sem_t sem)) "C_return(sem == SEM_FAILED);"))
+
  (define sem-open (foreign-lambda* sem_t ((c-string name) (unsigned-integer oflag)) "C_return(sem_open(name, oflag));"))
- (define sem-open/mode (foreign-lambda* sem_t ((c-string name) (unsigned-integer oflag) (mode_t mode) (unsigned-integer value)) "C_return(sem_open(name, oflag, mode, value));"))
+
+ (define sem-open/mode (foreign-lambda* sem_t ((c-string name) (unsigned-integer oflag) (mode_t mode) (unsigned-integer value)) 
+                                 "C_return(sem_open(name, oflag, mode, value));"))
 
  (define sem-close (foreign-lambda* scheme-object ((sem_t sem)) "CHECK2(sem_close(sem))"))
 
