@@ -88,4 +88,42 @@ if (err != 0)
 else                                              
   C_return(C_fix(val));                                
 "))
- )
+
+ (define (create-sem name value #!key (oflag o/creat) (mode 0644))
+   (let ((sem (sem-open/mode name oflag mode value)))
+     (if (sem-failed? sem)
+         (begin
+           (sem-unlink name)
+           #f)
+         (begin
+           (set-finalizer! sem (lambda (sem)
+                                 (sem-close sem)
+                                 (sem-unlink name)))
+           sem))))
+
+ (define-syntax with-sem
+   (syntax-rules ()
+     ((with-sem sem body ...)
+      (dynamic-wind
+          (lambda () (sem-wait sem))
+          (lambda () body ...)
+          (lambda () (sem-post sem))))))
+ 
+ (define-syntax with-sem/try
+   (syntax-rules ()
+     ((with-sem/try sem body-success body-fail)
+      (let ((success #f))
+        (dynamic-wind
+            (lambda () (set! success (sem-trywait sem)))
+            (lambda () (if success body-success body-fail))
+            (lambda () (if success (sem-post sem))))))))
+
+ (define-syntax with-sem/timed
+   (syntax-rules ()
+     ((with-sem/try sem seconds nano-seconds body-success body-fail)
+      (let ((success #f))
+        (dynamic-wind
+            (lambda () (set! success (sem-timedwait sem seconds nano-seconds)))
+            (lambda () (if success body-success body-fail))
+            (lambda () (if success (sem-post sem))))))))
+)
