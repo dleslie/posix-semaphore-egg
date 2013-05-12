@@ -41,77 +41,77 @@
 
 == Core Functions
 
-<function>(make-sem)</function>
+<procedure>(make-sem)</procedure>
 
 Allocates memory for a semaphore.
 
-<function>(free-sem semaphore)</function>
+<procedure>(free-sem semaphore)</procedure>
 
 Frees memory allocated for a semaphore.
 
-<function>(sem-init semaphore shared? value)</function>
+<procedure>(sem-init semaphore shared? value)</procedure>
 
 Initializes a semaphore. If `shared?` is true then the semaphore will be shared with processes which are not its children, and so must reside in a POSIX shared memory range. `value` is an integer.
 
-<function>(sem-destroy semaphore)</function>
+<procedure>(sem-destroy semaphore)</procedure>
 
 Destroys an un-named semaphore.
 
-<function>(sem-failed? semaphore)</function>
+<procedure>(sem-failed? semaphore)</procedure>
 
 Returns true if `semaphore` is a pointer to the special failed semaphore, indicating that `sem-open` failed to operate as desired.
 
-<function>(sem-open name open-flags)</function>
+<procedure>(sem-open name open-flags)</procedure>
 
 Given a string `name` and an integer mask of `open-flags`, attempts to open a semaphore using the given flags. Returns a semaphore, or false if the operation failed.
 
-<function>(sem-open/mode name open-flags mode_t value)</function>
+<procedure>(sem-open/mode name open-flags mode_t value)</procedure>
 
 Given a string `name` and an integer mask of `open-flags`, attempts to open a semaphore using the given flags. If `open-flags` is o/creat, then it will attempt to allocate a new semaphore with the given `mode_t` and a particular integer value. Returns a semaphore, or false if the operation failed.
 
-<function>(sem-close semaphore)</function>
+<procedure>(sem-close semaphore)</procedure>
 
 Given a semaphore, attempts to close the semaphore. Returns true if successful, false otherwise.
 
-<function>(sem-unlink name)</function>
+<procedure>(sem-unlink name)</procedure>
 
 Unlinks a semaphore by the given name. Returns true if successful, false otherwise.
 
-<function>(sem-wait semaphore)</function>
+<procedure>(sem-wait semaphore)</procedure>
 
 Attempts to decrement a semaphore. It will block until doing so is possible.
 
-<function>(sem-trywait semaphore)</function>
+<procedure>(sem-trywait semaphore)</procedure>
 
 Attempts to decrement a semaphore. It will not block if it is not possible to do so, and will return true if the semaphore was decremented and false otherwise.
 
-<function>(sem-timedwait semaphore seconds nano-seconds)</function>
+<procedure>(sem-timedwait semaphore seconds nano-seconds)</procedure>
 
 Attempts to decrement a semaphore. It will block for a maximum of `seconds + nanoseconds`, and will return true if the semaphore was decremented and false otherwise.
 
-<function>(sem-post semaphore)</function>
+<procedure>(sem-post semaphore)</procedure>
 
 Increments a semaphore.
 
-<function>(sem-getvalue semaphore)</function>
+<procedure>(sem-getvalue semaphore)</procedure>
 
 Gets the value of the semaphore. This command is non-blocking and non-deterministic.
 
-== Utility Functions
+== Utility Procedures
 
-<function>(create-sem name value #!key (open-flags o/creat) (mode 0644))</function>
+<procedure>(create-sem name value #!key (open-flags o/creat) (mode 0644))</procedure>
 
 Uses sem-open/mode to open or create a new semaphore, defaulting to creating. If doing so failed then it will unlink the name and return false. If doing so succeeded then it sets a finalizer that closes and unlinks the semaphore, and returns the new semaphore.
 
-<function>(with-sem/try semaphore . body)</function>
+<procedure>(with-sem/try semaphore . body)</procedure>
 
 Macro that uses dynamic-wind to ensure that the semaphore is properly posted regardless of the outcome of `body ...`.
 
-<function>(with-sem/try semaphore body-success body-fail)</function>
+<procedure>(with-sem/try semaphore body-success body-fail)</procedure>
 
 Macro that uses dynamic-wind to ensure that the semaphore is properly posted regardless of the outcome of `body-success` and `body-fail`. `body-success` is called if the semaphore could be decremented, otherwise `body-fail` is called.
 
-<function>(with-sem/timed semaphore seconds nano-seconds body-success body-fail)</function>
+<procedure>(with-sem/timed semaphore seconds nano-seconds body-success body-fail)</procedure>
 
 Macro that uses dynamic-wind to ensure that the semaphore is properly posted regardless of the outcome of `body-success` and `body-fail`. `body-success` is called if the semaphore was able to be decremented in `seconds + nano-seconds`, otherwise `body-fail` is called.
 
