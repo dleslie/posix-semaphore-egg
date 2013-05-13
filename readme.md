@@ -1,43 +1,65 @@
 
-posix-semaphore
-===
-
 Constants
 ===
 
 Open Flags
-=====
+----
 
 >  o/accmode
+
 >  o/rdonly
+
 >  o/wronly
+
 >  o/rdwr
+
 >  o/creat
+
 >  o/noctty
+
 >  o/trunc
+
 >  o/append
+
 >  o/nonblock
+
 >  o/ndelay
+
 >  o/sync
+
 >  o/fsync
+
 >  o/async
 
 Valid mode_t Flags
-=====
+----
 
 >  s/isuid
+
 >  s/isgid
+
 >  s/irusr
+
 >  s/iwusr
+
 >  s/ixusr
+
 >  s/irwxu
+
 >  s/irgrp
+
 >  s/iwgrp
+
 >  s/ixgrp
+
 >  s/irwxg
+
 >  s/iroth
+
 >  s/iwoth
+
 >  s/ixoth
+
 >  s/irwxo
 
 Core Functions
@@ -121,7 +143,7 @@ Macro that uses dynamic-wind to ensure that the semaphore is properly posted reg
 Example
 ====
 
-``
+`
 (use posix-semaphore)
 
 ;; Just in case some other proc has 'test-semaphore', I've tacked on a random number.
@@ -145,7 +167,7 @@ Example
           (display (format "Semaphore value after wait is: ~S\n" (sem-getvalue mutex))))
 
 (display (format "Semaphore value after post is: ~S\n" (sem-getvalue mutex)))
-``
+`
 
 Author
 ====
