@@ -1,4 +1,3 @@
-
 Constants
 ===
 
@@ -143,7 +142,7 @@ Macro that uses dynamic-wind to ensure that the semaphore is properly posted reg
 Example
 ====
 
-`
+```scheme
 (use posix-semaphore)
 
 ;; Just in case some other proc has 'test-semaphore', I've tacked on a random number.
@@ -167,7 +166,7 @@ Example
           (display (format "Semaphore value after wait is: ~S\n" (sem-getvalue mutex))))
 
 (display (format "Semaphore value after post is: ~S\n" (sem-getvalue mutex)))
-`
+```
 
 Author
 ====
