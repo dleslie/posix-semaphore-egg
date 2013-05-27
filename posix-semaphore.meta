@@ -3,6 +3,5 @@
 ((license "BSD3")
  (category io)
  (author "Daniel J. Leslie")
- (needs foreign)
  (synopsis "POSIX Semaphores")
  (doc-from-wiki))
