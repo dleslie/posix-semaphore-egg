@@ -3,7 +3,7 @@
 ;; Just in case some other proc has 'test-semaphore', I've tacked on a random number.
 ;; This shouldn't ever be necessary, or you could use the pid instead.
 ;; But for testing it came in handy.
-(define name (format "test-semaphore-~S" (random 100000)))
+(define name (format "/test-semaphore-~S" (random 100000)))
 
 ;; create-sem handles the name linking and sem-failed? check, as well as setting a finalizer to clean up the semaphore.
 (define mutex (create-sem name 1))
