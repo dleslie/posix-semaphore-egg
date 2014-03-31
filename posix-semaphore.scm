@@ -1,5 +1,6 @@
 #>
 #include <semaphore.h>
+#include <sys/stat.h>
 #include <fcntl.h>
 
 #define CHECK(op)                               \
